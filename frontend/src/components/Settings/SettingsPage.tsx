@@ -4,8 +4,9 @@ import PageContainer from "../Layout/PageContainer";
 import Modal from "../common/Modal";
 import { useAccountsStore } from "../../store/accounts";
 import { useToastStore } from "../../store/toast";
-import { encryptData, decryptData } from "../../utils/crypto";
+import { apiGet } from "../../api/client";
 import { countryCodeMap } from "../../apple/config";
+import { encryptData, decryptData } from "../../utils/crypto";
 import type { Account } from "../../types";
 
 interface ServerInfo {
@@ -62,8 +63,7 @@ export default function SettingsPage() {
   }, [entity]);
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((r) => (r.ok ? r.json() : null))
+    apiGet<ServerInfo>("/api/settings")
       .then(setServerInfo)
       .catch(() => setServerInfo(null));
   }, []);

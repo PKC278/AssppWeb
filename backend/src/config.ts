@@ -1,10 +1,19 @@
 import { createHash } from "crypto";
 import { timingSafeEqual } from "crypto";
 
+function parseCsvEnv(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export const config = {
   port: parseInt(process.env.PORT || "8080"),
   dataDir: process.env.DATA_DIR || "./data",
   publicBaseUrl: process.env.PUBLIC_BASE_URL || "",
+  corsOrigins: parseCsvEnv(process.env.CORS_ORIGINS),
   disableHttpsRedirect:
     process.env.UNSAFE_DANGEROUSLY_DISABLE_HTTPS_REDIRECT === "true",
   // Auto-cleanup: 0 disables

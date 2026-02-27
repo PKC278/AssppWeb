@@ -22,7 +22,13 @@ export function setupWsProxy(server: HttpServer) {
     if (req.url?.startsWith("/wisp")) {
       if (accessPasswordHash) {
         const url = new URL(req.url, "http://localhost");
-        const token = url.searchParams.get("token") || "";
+        const rawToken = (url.searchParams.get("token") || "").trim();
+        if (!/^[a-f0-9]{64}\/?$/i.test(rawToken)) {
+          socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+          socket.destroy();
+          return;
+        }
+        const token = rawToken.endsWith("/") ? rawToken.slice(0, -1) : rawToken;
         if (!verifyAccessToken(token)) {
           socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
           socket.destroy();

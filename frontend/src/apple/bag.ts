@@ -1,18 +1,25 @@
-import { parsePlist } from "./plist";
+import { getAccessToken } from '../components/Auth/PasswordGate';
+import { withBackendBase } from '../config/backend';
+import { parsePlist } from './plist';
 
 export interface BagOutput {
   authURL: string;
 }
 
 export const defaultAuthURL =
-  "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/authenticate";
+  'https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/authenticate';
 
 // Fetches the bag via the backend proxy.
 // The backend fetches it using Node.js native HTTPS.
 // The bag response is public data (Apple service URLs, no credentials).
 export async function fetchBag(deviceId: string): Promise<BagOutput> {
   try {
-    const resp = await fetch(`/api/bag?guid=${encodeURIComponent(deviceId)}`);
+    const token = getAccessToken();
+    const headers = token ? { 'X-Access-Token': token } : undefined;
+    const resp = await fetch(
+      withBackendBase(`/api/bag?guid=${encodeURIComponent(deviceId)}`),
+      { headers },
+    );
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({ error: resp.statusText }));
       console.warn(
@@ -36,7 +43,7 @@ export async function fetchBag(deviceId: string): Promise<BagOutput> {
 
     if (!authURL) {
       console.warn(
-        "[Bag] authenticateAccount URL not found in bag, using default auth endpoint",
+        '[Bag] authenticateAccount URL not found in bag, using default auth endpoint',
       );
       return { authURL: defaultAuthURL };
     }

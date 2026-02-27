@@ -1,5 +1,6 @@
-import { libcurl } from "libcurl.js/bundled";
-import { getAccessToken } from "../components/Auth/PasswordGate";
+import { libcurl } from 'libcurl.js/bundled';
+import { getAccessToken } from '../components/Auth/PasswordGate';
+import { backendWispUrl } from '../config/backend';
 
 let initialized = false;
 let initPromise: Promise<void> | null = null;
@@ -9,8 +10,7 @@ export async function initLibcurl(): Promise<void> {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    const wsProto = location.protocol === "https:" ? "wss:" : "ws:";
-    let wsUrl = `${wsProto}//${location.host}/wisp/`;
+    let wsUrl = backendWispUrl();
     const token = getAccessToken();
     if (token) {
       wsUrl += `?token=${encodeURIComponent(token)}`;

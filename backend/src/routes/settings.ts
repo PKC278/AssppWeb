@@ -12,6 +12,7 @@ router.get("/settings", (_req: Request, res: Response) => {
     port: config.port,
     dataDir: config.dataDir,
     publicBaseUrl: config.publicBaseUrl,
+    corsOrigins: config.corsOrigins,
     disableHttpsRedirect: config.disableHttpsRedirect,
     autoCleanupDays: config.autoCleanupDays,
     autoCleanupMaxMB: config.autoCleanupMaxMB,

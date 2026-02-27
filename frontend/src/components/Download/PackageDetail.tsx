@@ -10,6 +10,7 @@ import { useAccounts } from "../../hooks/useAccounts";
 import { useToastStore } from "../../store/toast";
 import { getInstallInfo } from "../../api/install";
 import { getAccountContext } from "../../utils/toast";
+import { withBackendBase } from "../../config/backend";
 
 export default function PackageDetail() {
   const { id } = useParams<{ id: string }>();
@@ -209,7 +210,9 @@ export default function PackageDetail() {
                   </>
                 )}
                 <a
-                  href={`/api/packages/${task.id}/file?accountHash=${encodeURIComponent(task.accountHash)}`}
+                  href={withBackendBase(
+                    `/api/packages/${task.id}/file?accountHash=${encodeURIComponent(task.accountHash)}`,
+                  )}
                   download
                   onClick={() => toastAction("toast.title.downloadIpaStarted")}
                   className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
